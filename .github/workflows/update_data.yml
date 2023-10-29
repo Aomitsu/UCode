@@ -15,7 +15,7 @@ jobs:
     steps: 
     - uses: actions/checkout@v3
 
-    - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O /data.new.json"
+    - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O data.new.json"
     - name: Compare data
       id: compare
       uses: LouisBrunner/diff-action@v0.2.0
