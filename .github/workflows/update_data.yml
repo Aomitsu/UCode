@@ -1,4 +1,4 @@
-name: Auto_update data.json
+name: Auto update data.json
 on:
   # Schedule daily updates at 05:00
   schedule: [{cron: "0 5 * * *"}]
@@ -15,17 +15,14 @@ jobs:
     steps: 
     - run: "apk add git"
     - uses: actions/checkout@v4
-    - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O data.new.json"
-    - name: Compare data
-      id: compare
-      uses: LouisBrunner/diff-action@v0.2.0
-      with:
-        old: data.json
-        new: data.new.json
-        mode: addition
-        tolerance: mixed
-    - run: "rm data.json"
-    - run: "mv data.new.json data.json"
-    - name: Create Pull Request
-      if: steps.compare.outputs.passed == 'true'
+    - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O data.json"
+    #Pull request is not created if files are the same
+    - name: Create Pull Request 
       uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: "fix(data.json): Update data.json"
+        body: |
+          Update data.json from official source : https://code.gouv.fr/data/repositories/json/all.json !
+          All data belongs to [Etalab](https://www.etalab.gouv.fr/), we download data only to avoid unnecessary requests to their servers.
+
+          If you are from Etalab, The French Gov, etc... and want us to stop using this data, contact us with Issues.
