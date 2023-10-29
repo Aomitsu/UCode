@@ -1,8 +1,8 @@
+use csv;
 use dotenv::dotenv;
 use log::info;
-use serde::{Serialize, Deserialize};
-use std::{fs::File, error::Error, env};
-use csv;
+use serde::{Deserialize, Serialize};
+use std::{env, error::Error, fs::File};
 
 mod bsky;
 
@@ -12,10 +12,10 @@ use crate::bsky::BskyClient;
 pub struct Record {
     description: String,
     name: String,
-    repository_url: String
+    repository_url: String,
 }
 
-fn parse_projects () -> Result<(), Box<dyn Error>> {
+fn parse_projects() -> Result<(), Box<dyn Error>> {
     let file_path = "data.csv";
     let file = File::open(file_path)?;
     let mut rdr = csv::Reader::from_reader(file);
@@ -36,6 +36,6 @@ async fn main() {
     let client = BskyClient::new("https://bsky.social/xrpc".to_string());
     client.auth(
         env::var("BSKY_USERNAME").unwrap_or("".to_string()),
-        env::var("BSKY_PASSWORD").unwrap_or("".to_string())
+        env::var("BSKY_PASSWORD").unwrap_or("".to_string()),
     );
 }

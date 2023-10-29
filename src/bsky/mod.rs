@@ -1,20 +1,17 @@
 pub mod models;
 
-use hyper::{Client, client::HttpConnector, Request, Method, Body, StatusCode};
+use hyper::{client::HttpConnector, Body, Client, Method, Request, StatusCode};
 use hyper_tls::HttpsConnector;
 use log::debug;
 use std::str;
 
-
-use self::models::{BskyAuthResp, BskyAuthReq};
-
+use self::models::{BskyAuthReq, BskyAuthResp};
 
 pub struct BskyClient {
     pub client: Client<HttpsConnector<HttpConnector>>,
     pub bearer_token: Option<String>,
-    pub base_url: String
+    pub base_url: String,
 }
-
 
 impl BskyClient {
     pub fn new(base_url: String) -> Self {
@@ -25,24 +22,28 @@ impl BskyClient {
         Self {
             client,
             bearer_token: None,
-            base_url
+            base_url,
         }
     }
 
-    pub async fn auth(mut self, identifier: String, password: String) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
-
+    pub async fn auth(
+        mut self,
+        identifier: String,
+        password: String,
+    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         let req = Request::builder()
-                            .method(Method::POST)
-                            .uri(format!("{}/com.atproto.server.createSession", self.base_url))
-                            .header("content-type", "application/json")
-                            .header("user-agent", "BOT UCode/https://github.com/Aomitsu/UCode")
-                            .body(Body::from(
-                                serde_json::to_string(&BskyAuthReq {
-                                    identifier,
-                                    password
-                                })?)
-                            )?;
-        
+            .method(Method::POST)
+            .uri(format!(
+                "{}/com.atproto.server.createSession",
+                self.base_url
+            ))
+            .header("content-type", "application/json")
+            .header("user-agent", "BOT UCode/https://github.com/Aomitsu/UCode")
+            .body(Body::from(serde_json::to_string(&BskyAuthReq {
+                identifier,
+                password,
+            })?))?;
+
         let res = self.client.request(req).await?;
         if res.status() == StatusCode::OK {
             let body = hyper::body::to_bytes(res).await?;
@@ -59,5 +60,4 @@ impl BskyClient {
 
         Ok(self)
     }
-    
 }

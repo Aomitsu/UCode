@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct BskyAuthReq {
     pub identifier: String,
-    pub password: String
+    pub password: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BskyAuthResp {
@@ -12,6 +12,5 @@ pub struct BskyAuthResp {
     pub email: String,
     pub emailConfirmed: bool,
     pub accessJwt: String,
-    pub refreshJwt: String
+    pub refreshJwt: String,
 }
-
