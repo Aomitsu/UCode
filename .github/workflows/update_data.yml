@@ -14,7 +14,7 @@ jobs:
       options: --user root
     steps: 
     - uses: actions/checkout@v3
-
+    - run: "apk add git"
     - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O data.new.json"
     - name: Compare data
       id: compare
