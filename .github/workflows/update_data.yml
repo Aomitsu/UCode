@@ -13,8 +13,8 @@ jobs:
       image: alpine:latest
       options: --user root
     steps: 
-    - uses: actions/checkout@v4
     - run: "apk add git"
+    - uses: actions/checkout@v4
     - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O data.new.json"
     - name: Compare data
       id: compare
@@ -26,7 +26,6 @@ jobs:
         tolerance: mixed
     - run: "rm data.json"
     - run: "mv data.new.json data.json"
-    - run: "ls -la"
     - name: Create Pull Request
       if: steps.compare.outputs.passed == 'true'
       uses: peter-evans/create-pull-request@v5
