@@ -12,7 +12,7 @@ jobs:
     steps: 
     - uses: actions/checkout@v3
 
-    - run: "https://code.gouv.fr/data/repositories/json/all.json -O /data.new.json"
+    - run: "wget https://code.gouv.fr/data/repositories/json/all.json -O /data.new.json"
     
     - name: Compare data
       id: compare
