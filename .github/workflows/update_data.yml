@@ -7,7 +7,7 @@ on:
   # (optional) Run workflow when pushing on master/main
   push: {branches: ["main"]}
 jobs:
-  compare_data: # It's a test, it download the file 2 times, that's not good...
+  update_data:
     runs-on: ubuntu-latest
     container: 
       image: alpine:latest
