@@ -1,0 +1,29 @@
+name: Auto_update data.json
+on:
+  # Schedule daily updates at 05:00
+  schedule: [{cron: "0 5 * * *"}]
+  # (optional) Run workflow manually
+  workflow_dispatch:
+  # (optional) Run workflow when pushing on master/main
+  push: {branches: ["main"]}
+jobs:
+  compare_data: # It's a test, it download the file 2 times, that's not good...
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v3
+
+    - run: "https://code.gouv.fr/data/repositories/json/all.json -O /data.new.json"
+    
+    - name: Compare data
+      id: compare
+      uses: LouisBrunner/diff-action@v0.2.0
+      with:
+        old: data.json
+        new: data.new.json
+        mode: addition
+        tolerance: mixed
+    - run: "rm data.json"
+    - run: "mv data.new.json data.json"
+    - name: Create Pull Request
+      if: steps.compare.output.passed == false
+      uses: peter-evans/create-pull-request@v5
