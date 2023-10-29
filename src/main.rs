@@ -33,9 +33,15 @@ async fn main() {
     env_logger::init();
     info!("Hello, world!");
 
-    let client = BskyClient::new("https://bsky.social/xrpc".to_string());
-    client.auth(
+    // TODO: Avoid to use unwrap
+
+    let client = BskyClient::new(
+        "https://bsky.social/xrpc".to_string(),
+        env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
+    );
+    let authed_client = client.auth(
         env::var("BSKY_USERNAME").unwrap_or("".to_string()),
         env::var("BSKY_PASSWORD").unwrap_or("".to_string()),
-    );
+    ).await.unwrap();
+    authed_client.send_simple_message("Ceci est un message de test".to_string()).await.unwrap();
 }

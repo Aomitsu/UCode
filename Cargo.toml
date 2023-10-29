@@ -2,6 +2,7 @@
 name = "ucode"
 version = "0.1.0"
 edition = "2021"
+license = "GPL-3.0-or-later"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -17,3 +18,5 @@ csv = "1.1"
 dotenv = "0.15.0"
 log = "0.4"
 env_logger = "0.10"
+
+chrono = "0.4"
