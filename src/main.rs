@@ -1,12 +1,12 @@
 use csv;
 use dotenv::dotenv;
-use log::info;
+use log::{info, debug};
 use serde::{Deserialize, Serialize};
 use std::{env, error::Error, fs::File};
 
 mod bsky;
 
-use crate::bsky::BskyClient;
+use crate::bsky::{BskyClient, card_api::CardyBClient};
 
 #[derive(Debug, Deserialize)]
 pub struct Record {
@@ -35,13 +35,23 @@ async fn main() {
 
     // TODO: Avoid to use unwrap
 
-    let client = BskyClient::new(
+    let client: BskyClient = BskyClient::new(
         "https://bsky.social/xrpc".to_string(),
         env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
     );
-    let authed_client = client.auth(
+
+    let card_client: CardyBClient = CardyBClient::new(
+        env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
+    );
+
+    let card = card_client.get_card("https://github.com/".to_string()).await.unwrap();
+
+    debug!("Card : {:?}", card);
+    /*let authed_client = client.auth(
         env::var("BSKY_USERNAME").unwrap_or("".to_string()),
         env::var("BSKY_PASSWORD").unwrap_or("".to_string()),
     ).await.unwrap();
-    authed_client.send_simple_message("Ceci est un message de test".to_string()).await.unwrap();
+    authed_client.send_simple_message("Ceci est un message de test".to_string()).await.unwrap();*/
+
+
 }
