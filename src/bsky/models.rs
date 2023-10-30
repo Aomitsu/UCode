@@ -16,7 +16,6 @@ pub struct BskyAuthResp {
     pub refreshJwt: String,
 }
 
-
 // -- Repo add
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SimpleTextRecord {
@@ -37,7 +36,7 @@ pub struct BskyCreateRecordReq {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BskyPostBlobResp {
-    pub blob: BskyBlob
+    pub blob: BskyBlob,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

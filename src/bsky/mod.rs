@@ -1,5 +1,5 @@
-pub mod models;
 pub mod card_api;
+pub mod models;
 
 use chrono::{DateTime, Utc};
 use hyper::{client::HttpConnector, Body, Client, Method, Request, StatusCode};
@@ -17,7 +17,7 @@ pub struct BskyClient {
     pub bearer_token: Option<String>,
     pub base_url: String,
     pub user_agent: String,
-    pub user: Option<BskyUser>
+    pub user: Option<BskyUser>,
 }
 #[derive(Clone, Debug)]
 pub struct BskyUser {
@@ -38,7 +38,7 @@ impl BskyClient {
             bearer_token: None,
             base_url,
             user_agent,
-            user: None
+            user: None,
         }
     }
 
@@ -68,7 +68,7 @@ impl BskyClient {
             self.bearer_token = Some(resp.accessJwt);
             self.user = Some(BskyUser {
                 did: resp.did,
-                handle: resp.handle
+                handle: resp.handle,
             });
             debug!("Bluesky client is authenticated.");
             //BskyAuthResp::from();
@@ -82,7 +82,7 @@ impl BskyClient {
 
     pub async fn send_image(
         self,
-        image_url: String
+        image_url: String,
     ) -> Result<BskyPostBlobResp, Box<dyn std::error::Error + Send + Sync>> {
         let data = self.clone();
 
@@ -92,20 +92,18 @@ impl BskyClient {
             .body(Body::empty())?;
         let mut res_image = self.client.request(img_req).await?;
 
-        let image_body =  hyper::body::to_bytes(res_image.body_mut()).await?;
+        let image_body = hyper::body::to_bytes(res_image.body_mut()).await?;
         let image_mime = res_image.headers().get("content-type").unwrap().to_str()?;
-        
-        
 
         let post_img_req = Request::builder()
             .method(Method::POST)
-            .uri(format!(
-                "{}/com.atproto.repo.uploadBlob",
-                data.base_url
-            ))
+            .uri(format!("{}/com.atproto.repo.uploadBlob", data.base_url))
             .header("content-type", image_mime)
             .header("user-agent", data.user_agent)
-            .header("Authorization", format!("Bearer {}", data.bearer_token.unwrap()))
+            .header(
+                "Authorization",
+                format!("Bearer {}", data.bearer_token.unwrap()),
+            )
             .body(Body::from(image_body))?;
 
         let res_post_image = self.client.request(post_img_req).await?;
@@ -126,41 +124,37 @@ impl BskyClient {
         self,
         text: String,
     ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
-
         let now = SystemTime::now();
         let now: DateTime<Utc> = now.into();
         let now = now.to_rfc3339();
 
         let data = self.clone();
 
-        let body = BskyCreateRecordReq{
+        let body = BskyCreateRecordReq {
             repo: self.clone().user.unwrap().handle.to_string(),
             collection: "app.bsky.feed.post".to_string(),
-            record: RecordType::SimpleText(SimpleTextRecord{
+            record: RecordType::SimpleText(SimpleTextRecord {
                 text,
                 createdAt: now.to_owned(),
-            })
+            }),
         };
 
         let req = Request::builder()
             .method(Method::POST)
-            .uri(format!(
-                "{}/com.atproto.repo.createRecord",
-                data.base_url
-            ))
+            .uri(format!("{}/com.atproto.repo.createRecord", data.base_url))
             .header("content-type", CONTENT_TYPE)
             .header("user-agent", data.user_agent)
-            .header("Authorization", format!("Bearer {}", data.bearer_token.unwrap()))
-            .body(Body::from(
-                serde_json::to_string(&body)?
-            ))?;
+            .header(
+                "Authorization",
+                format!("Bearer {}", data.bearer_token.unwrap()),
+            )
+            .body(Body::from(serde_json::to_string(&body)?))?;
         let res = self.client.request(req).await?;
         let bady = hyper::body::to_bytes(res).await?;
 
         debug!("Message: {:?}", serde_json::to_string(&body)?);
         debug!("Result: {:?}", str::from_utf8(&bady)?);
-        
+
         Ok(self)
     }
-
 }

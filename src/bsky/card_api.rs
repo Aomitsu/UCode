@@ -1,13 +1,13 @@
-use hyper::{client::HttpConnector, Client, Request, Method, Body};
+use hyper::{client::HttpConnector, Body, Client, Method, Request};
 use hyper_tls::HttpsConnector;
 use log::debug;
 use serde::{Deserialize, Serialize};
-use urlencoding::encode;
 use std::str;
+use urlencoding::encode;
 
 pub struct CardyBClient {
     pub client: Client<HttpsConnector<HttpConnector>>,
-    pub user_agent: String
+    pub user_agent: String,
 }
 
 impl CardyBClient {
@@ -16,17 +16,20 @@ impl CardyBClient {
         let client = Client::builder().build::<_, hyper::Body>(https);
         debug!("A new CardyB client is created.");
 
-        Self {
-            client,
-            user_agent
-        }
+        Self { client, user_agent }
     }
 
-    pub async fn get_card(self, url: String) -> Result<CardyBResp, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn get_card(
+        self,
+        url: String,
+    ) -> Result<CardyBResp, Box<dyn std::error::Error + Send + Sync>> {
         let url_encoded = encode(&url);
         let req = Request::builder()
             .method(Method::GET)
-            .uri(format!("https://cardyb.bsky.app/v1/extract?url={}", url_encoded))
+            .uri(format!(
+                "https://cardyb.bsky.app/v1/extract?url={}",
+                url_encoded
+            ))
             .header("user-agent", self.user_agent)
             .body(Body::empty())?;
         let res = self.client.request(req).await?;

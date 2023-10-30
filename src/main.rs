@@ -1,12 +1,12 @@
 use csv;
 use dotenv::dotenv;
-use log::{info, debug};
+use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::{env, error::Error, fs::File};
 
 mod bsky;
 
-use crate::bsky::{BskyClient, card_api::CardyBClient};
+use crate::bsky::{card_api::CardyBClient, BskyClient};
 
 #[derive(Debug, Deserialize)]
 pub struct Record {
@@ -40,11 +40,13 @@ async fn main() {
         env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
     );
 
-    let card_client: CardyBClient = CardyBClient::new(
-        env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
-    );
+    let card_client: CardyBClient =
+        CardyBClient::new(env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()));
 
-    let card = card_client.get_card("https://github.com/Aomitsu/UCode".to_string()).await.unwrap();
+    let card = card_client
+        .get_card("https://github.com/Aomitsu/UCode".to_string())
+        .await
+        .unwrap();
 
     debug!("Card : {:?}", card);
     /*let authed_client = client.auth(
@@ -52,6 +54,4 @@ async fn main() {
         env::var("BSKY_PASSWORD").unwrap_or("".to_string()),
     ).await.unwrap();
     authed_client.send_simple_message("Ceci est un message de test".to_string()).await.unwrap();*/
-
-
 }
