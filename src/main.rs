@@ -1,7 +1,7 @@
 use csv;
 use dotenv::dotenv;
 use log::{debug, info};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use std::{env, error::Error, fs::File};
 
 mod bsky;
@@ -35,7 +35,7 @@ async fn main() {
 
     // TODO: Avoid to use unwrap
 
-    let client: BskyClient = BskyClient::new(
+    let _client: BskyClient = BskyClient::new(
         "https://bsky.social/xrpc".to_string(),
         env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
     );
