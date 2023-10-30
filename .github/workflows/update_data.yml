@@ -1,7 +1,11 @@
 name: Auto update data.json
 on:
+  # Schedule daily updates at 05:00
   schedule: [{cron: "0 5 * * *"}]
+  # (optional) Run workflow manually
   workflow_dispatch:
+  # (optional) Run workflow when pushing on master/main
+  push: {branches: ["main"]}
 jobs:
   update_data:
     runs-on: ubuntu-latest
