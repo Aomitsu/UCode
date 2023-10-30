@@ -7,6 +7,8 @@ use hyper_tls::HttpsConnector;
 use log::debug;
 use std::{str, time::SystemTime};
 
+use crate::bsky::models::BskyPostBlobResp;
+
 use self::models::{BskyAuthReq, BskyAuthResp, BskyCreateRecordReq, RecordType, SimpleTextRecord};
 
 #[derive(Clone, Debug)]
@@ -78,9 +80,49 @@ impl BskyClient {
         Ok(self)
     }
 
-    // TODO:
-    /// Only here for tests
-    pub async fn send_simple_message(
+    pub async fn send_image(
+        self,
+        image_url: String
+    ) -> Result<BskyPostBlobResp, Box<dyn std::error::Error + Send + Sync>> {
+        let data = self.clone();
+
+        let img_req = Request::builder()
+            .method(Method::GET)
+            .uri(image_url)
+            .body(Body::empty())?;
+        let mut res_image = self.client.request(img_req).await?;
+
+        let image_body =  hyper::body::to_bytes(res_image.body_mut()).await?;
+        let image_mime = res_image.headers().get("content-type").unwrap().to_str()?;
+        
+        
+
+        let post_img_req = Request::builder()
+            .method(Method::POST)
+            .uri(format!(
+                "{}/com.atproto.repo.uploadBlob",
+                data.base_url
+            ))
+            .header("content-type", image_mime)
+            .header("user-agent", data.user_agent)
+            .header("Authorization", format!("Bearer {}", data.bearer_token.unwrap()))
+            .body(Body::from(image_body))?;
+
+        let res_post_image = self.client.request(post_img_req).await?;
+        if res_post_image.status() == StatusCode::OK {
+            let body = hyper::body::to_bytes(res_post_image).await?;
+            let string = str::from_utf8(&body)?;
+            let resp: BskyPostBlobResp = serde_json::from_str(string)?;
+            debug!("Bluesky client just uploaded an image.");
+            Ok(resp)
+            //BskyAuthResp::from();
+        } else {
+            debug!("Bluesky client can't upload image.");
+            todo!("handle error")
+        }
+    }
+
+    pub async fn send_message(
         self,
         text: String,
     ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {

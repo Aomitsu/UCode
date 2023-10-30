@@ -44,7 +44,7 @@ async fn main() {
         env::var("USER_AGENT").unwrap_or("UBot/Fallback user_agent".to_string()),
     );
 
-    let card = card_client.get_card("https://github.com/".to_string()).await.unwrap();
+    let card = card_client.get_card("https://github.com/Aomitsu/UCode".to_string()).await.unwrap();
 
     debug!("Card : {:?}", card);
     /*let authed_client = client.auth(

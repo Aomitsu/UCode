@@ -34,3 +34,24 @@ pub struct BskyCreateRecordReq {
     pub collection: String,
     pub record: RecordType,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BskyPostBlobResp {
+    pub blob: BskyBlob
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BskyRef {
+    #[serde(alias = "$link")]
+    pub link: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BskyBlob {
+    #[serde(alias = "$type")]
+    pub at_type: String,
+    #[serde(alias = "ref")]
+    pub at_ref: BskyRef,
+    pub mimeType: String,
+    pub size: u32,
+}
