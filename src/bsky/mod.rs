@@ -7,9 +7,9 @@ use hyper_tls::HttpsConnector;
 use log::debug;
 use std::{str, time::SystemTime};
 
-use crate::bsky::models::BskyPostBlobResp;
+use crate::bsky::models::{BskyPostBlobResp, TextRecord, BskyEmbed, BskyEmbedExternal};
 
-use self::models::{BskyAuthReq, BskyAuthResp, BskyCreateRecordReq, RecordType, SimpleTextRecord};
+use self::models::{BskyAuthReq, BskyAuthResp, BskyCreateRecordReq, RecordType};
 
 #[derive(Clone, Debug)]
 pub struct BskyClient {
@@ -122,7 +122,7 @@ impl BskyClient {
 
     pub async fn send_message(
         self,
-        text: String,
+        //text: String,
     ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         let now = SystemTime::now();
         let now: DateTime<Utc> = now.into();
@@ -130,12 +130,23 @@ impl BskyClient {
 
         let data = self.clone();
 
+        let image = self.clone().send_image("https://cardyb.bsky.app/v1/image?url=https%3A%2F%2Fopengraph.githubassets.com%2F6d2d7ff67cff137af0bacb209c7eea5e6d597c5538066db65190c0861f97fdbc%2FAomitsu%2FUCode".to_string()).await?;
+
         let body = BskyCreateRecordReq {
             repo: self.clone().user.unwrap().handle.to_string(),
             collection: "app.bsky.feed.post".to_string(),
-            record: RecordType::SimpleText(SimpleTextRecord {
-                text,
-                createdAt: now.to_owned(),
+            record: RecordType::TextRecord(TextRecord {
+                text: "This is a test".to_string(),
+                createdAt: now,
+                embed: BskyEmbed {
+                    at_type: "app.bsky.embed.external".to_string(),
+                    external: BskyEmbedExternal {
+                        uri: "https://github.com/Aomitsu/UCode".to_string(),
+                        title: "GitHub".to_string(),
+                        description: "UCode".to_string(),
+                        thumb: image.blob,
+                    }
+                },
             }),
         };
 

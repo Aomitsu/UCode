@@ -18,14 +18,28 @@ pub struct BskyAuthResp {
 
 // -- Repo add
 #[derive(Serialize, Deserialize, Debug)]
-pub struct SimpleTextRecord {
+pub struct BskyEmbed{
+    #[serde(rename = "$type")]
+    pub at_type: String,
+    pub external: BskyEmbedExternal,
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TextRecord {
     pub text: String,
     pub createdAt: String,
+    pub embed: BskyEmbed,
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BskyEmbedExternal {
+    pub uri: String,
+    pub title: String,
+    pub description: String,
+    pub thumb: BskyBlob,
 }
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum RecordType {
-    SimpleText(SimpleTextRecord),
+    TextRecord(TextRecord),
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BskyCreateRecordReq {
@@ -41,15 +55,15 @@ pub struct BskyPostBlobResp {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BskyRef {
-    #[serde(alias = "$link")]
+    #[serde(rename = "$link")]
     pub link: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BskyBlob {
-    #[serde(alias = "$type")]
+    #[serde(rename = "$type")]
     pub at_type: String,
-    #[serde(alias = "ref")]
+    #[serde(rename = "ref")]
     pub at_ref: BskyRef,
     pub mimeType: String,
     pub size: u32,
