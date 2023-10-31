@@ -18,7 +18,7 @@ pub struct BskyAuthResp {
 
 // -- Repo add
 #[derive(Serialize, Deserialize, Debug)]
-pub struct BskyEmbed{
+pub struct BskyEmbed {
     #[serde(rename = "$type")]
     pub at_type: String,
     pub external: BskyEmbedExternal,

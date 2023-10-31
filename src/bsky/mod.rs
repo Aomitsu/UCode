@@ -7,7 +7,7 @@ use hyper_tls::HttpsConnector;
 use log::debug;
 use std::{str, time::SystemTime};
 
-use crate::bsky::models::{BskyPostBlobResp, TextRecord, BskyEmbed, BskyEmbedExternal};
+use crate::bsky::models::{BskyEmbed, BskyEmbedExternal, BskyPostBlobResp, TextRecord};
 
 use self::models::{BskyAuthReq, BskyAuthResp, BskyCreateRecordReq, RecordType};
 
@@ -145,7 +145,7 @@ impl BskyClient {
                         title: "GitHub".to_string(),
                         description: "UCode".to_string(),
                         thumb: image.blob,
-                    }
+                    },
                 },
             }),
         };
