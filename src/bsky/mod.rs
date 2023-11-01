@@ -47,6 +47,7 @@ impl BskyClient {
         identifier: String,
         password: String,
     ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+        let data = self.clone();
         let req = Request::builder()
             .method(Method::POST)
             .uri(format!(
@@ -54,7 +55,7 @@ impl BskyClient {
                 self.base_url
             ))
             .header("content-type", CONTENT_TYPE)
-            .header("user-agent", "BOT UCode/https://github.com/Aomitsu/UCode")
+            .header("user-agent", data.user_agent)
             .body(Body::from(serde_json::to_string(&BskyAuthReq {
                 identifier,
                 password,
@@ -164,11 +165,17 @@ impl BskyClient {
             )
             .body(Body::from(serde_json::to_string(&body)?))?;
         let res = self.client.request(req).await?;
-        let bady = hyper::body::to_bytes(res).await?;
 
-        debug!("Message: {:?}", serde_json::to_string(&body)?);
-        debug!("Result: {:?}", str::from_utf8(&bady)?);
+        if res.status() == StatusCode::OK {
+            debug!("Bluesky client just sent a message.");
+            let bady = hyper::body::to_bytes(res).await?;
 
-        Ok(self)
+            debug!("Message: {:?}", serde_json::to_string(&body)?);
+            debug!("Result: {:?}", str::from_utf8(&bady)?);
+            Ok(self)
+        } else {
+            debug!("Bluesky client can't send message.");
+            panic!("Bluesky client can't send message.")
+        }
     }
 }
