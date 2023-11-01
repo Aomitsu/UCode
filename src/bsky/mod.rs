@@ -74,7 +74,7 @@ impl BskyClient {
             //BskyAuthResp::from();
         } else {
             debug!("Bluesky client is not authenticated.");
-            todo!("handle error")
+            panic!("Bluesky client is not authenticated.")
         }
 
         Ok(self)
@@ -116,7 +116,7 @@ impl BskyClient {
             //BskyAuthResp::from();
         } else {
             debug!("Bluesky client can't upload image.");
-            todo!("handle error")
+            panic!("Bluesky client can't upload image.")
         }
     }
 
@@ -145,7 +145,7 @@ impl BskyClient {
                     at_type: "app.bsky.embed.external".to_string(),
                     external: BskyEmbedExternal {
                         uri: uri.to_string(),
-                        title: title,
+                        title,
                         description: text,
                         thumb: image.blob,
                     },
