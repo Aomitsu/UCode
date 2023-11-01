@@ -3,6 +3,7 @@ use log::{debug, info};
 use std::env;
 
 mod bsky;
+mod json;
 
 use crate::bsky::{card_api::CardyBClient, BskyClient};
 
