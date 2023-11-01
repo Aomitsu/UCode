@@ -35,5 +35,10 @@ async fn main() {
         )
         .await
         .unwrap();
-    authed_client.send_message().await.unwrap();
+    authed_client.send_message(
+        card.description,
+        card.image,
+        "https://github.com/Aomitsu/UCode".to_string(),
+        card.title
+    ).await.unwrap();
 }

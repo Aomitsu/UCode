@@ -41,7 +41,7 @@ impl CardyBClient {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CardyBResp {
     pub error: String,
     pub likely_type: String,
