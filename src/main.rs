@@ -1,7 +1,7 @@
 use dotenv::dotenv;
 use log::{debug, info};
 use rand::prelude::*;
-use std::{env};
+use std::env;
 
 mod bsky;
 mod json;
@@ -40,7 +40,11 @@ async fn main() {
     let _ = send_message(datajs, authed_client, card_client).await;
 }
 
-pub async fn send_message(datajs: JsonData, client: BskyClient, card_client: CardyBClient) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub async fn send_message(
+    datajs: JsonData,
+    client: BskyClient,
+    card_client: CardyBClient,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     // pick random entry into datajs
     let mut random_index = rand::thread_rng();
     let random_entry: Option<&JsonStructure> =
@@ -53,17 +57,25 @@ pub async fn send_message(datajs: JsonData, client: BskyClient, card_client: Car
 
         debug!("{:?}", card);
 
-        let description = entry.description.as_ref().unwrap_or(&"Aucune description fournie sur code.gouv.fr".to_string()).to_string();
-        let entity = entry.organization_name.as_ref().unwrap_or(&"unknown".to_string()).to_string();
-        let project_name = entry.name.as_ref().unwrap_or(&"unknown".to_string()).to_string();
-
+        let description = entry
+            .description
+            .as_ref()
+            .unwrap_or(&"Aucune description fournie sur code.gouv.fr".to_string())
+            .to_string();
+        let entity = entry
+            .organization_name
+            .as_ref()
+            .unwrap_or(&"unknown".to_string())
+            .to_string();
+        let project_name = entry
+            .name
+            .as_ref()
+            .unwrap_or(&"unknown".to_string())
+            .to_string();
 
         client
             .send_message(
-                format!("{}/{}\n{}", 
-                entity,
-                project_name,
-                description),
+                format!("{}/{}\n{}", entity, project_name, description),
                 card.image,
                 entry.repository_url.as_ref().unwrap().to_string(),
                 card.title,
