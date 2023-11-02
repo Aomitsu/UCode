@@ -6,6 +6,8 @@ UCode, acronym for " Un Code aléatoire de notre Gouvernement " is a [Bluesky](h
 # Features
 
  - A very lite Bluesky client
+ - An auto updated data.json file
+ - A way to parse this data.json file
 
 # Information
 Ce projet n'a pas pour but de nuire, propager la haine, ou autre, il a comme objectif de partager les projets open-source touchant de près ou de loin à notre gouvernement. Il s'agit ici d'encourager les initiatives de notre gouvernement en matière d'open source et d'open data.
