@@ -1,7 +1,7 @@
 use dotenv::dotenv;
 use log::{debug, info};
 use rand::prelude::*;
-use std::{env, path::Path};
+use std::{env};
 
 mod bsky;
 mod json;
@@ -37,7 +37,7 @@ async fn main() {
         .await
         .unwrap();
 
-    send_message(datajs, authed_client, card_client).await;
+    let _ = send_message(datajs, authed_client, card_client).await;
 }
 
 pub async fn send_message(datajs: JsonData, client: BskyClient, card_client: CardyBClient) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
