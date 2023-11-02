@@ -7,8 +7,8 @@ env:
   CARGO_TERM_COLOR: always
   BSKY_USERNAME: ${{ secrets.BSKY_USERNAME }}
   BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
-  USER_AGENT: ${{ variables.USER_AGENT }}
-  RUST_LOG: ${{ variables.RUST_LOG }}
+  USER_AGENT: ${{ secrets.USER_AGENT }}
+  RUST_LOG: ${{ secrets.RUST_LOG }}
 jobs:
   # Run cargo run --release
   run_release:
